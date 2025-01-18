@@ -1,37 +1,100 @@
-// Make showWarningModal globally available
-window.showWarningModal = function(type) {
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
+document.addEventListener('DOMContentLoaded', () => {
+    const initialMessage = document.getElementById('initial-message');
+    const revealBtn = document.getElementById('revealBtn');
+    const questionContent = document.getElementById('question-content');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const response = document.getElementById('response');
     
-    const modal = document.createElement('div');
-    modal.className = 'warning-modal';
+    // Add check before creating hearts
+    const heartsContainer = document.createElement('div');
+    heartsContainer.classList.add('hearts-container');
+    document.body.appendChild(heartsContainer);
     
-    if (type === 'museum') {
-        modal.innerHTML = `
-            <h2>Nahhhhh </h2>
-            <button onclick="this.parentElement.remove(); document.querySelector('.modal-overlay').remove();">
-                Kies iets anders bruh
-            </button>
-        `;
-    } else {
-        modal.innerHTML = `
-            <h2>Is jy mal?😱</h2>
-            <p>Ons is op budget hier! </p>
-            <button onclick="this.parentElement.remove(); document.querySelector('.modal-overlay').remove();">
-                Kies iets anders bruh 😂
-            </button>
-        `;
+    // Create floating hearts
+    function createHeart() {
+        const heart = document.createElement('i');
+        heart.classList.add('fas', 'fa-heart', 'heart');
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        heartsContainer.appendChild(heart);
+        
+        setTimeout(() => heart.remove(), 6000);
     }
     
-    document.body.appendChild(overlay);
-    document.body.appendChild(modal);
-}
+    setInterval(createHeart, 300);
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Questions array - needs to be defined before it's used
+    // Reveal button functionality
+    revealBtn.addEventListener('click', () => {
+        initialMessage.style.display = 'none';
+        questionContent.classList.remove('hidden');
+        questionContent.classList.add('show');
+    });
+
+    // No button interaction - moves away from cursor
+    noBtn.addEventListener('mouseover', () => {
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+    });
+
+    // Yes button interaction
+    yesBtn.addEventListener('click', () => {
+        // Hide the question and buttons
+        questionContent.querySelector('h1').style.display = 'none';
+        questionContent.querySelector('.buttons').style.display = 'none';
+        
+        // Show the response with questions prompt
+        response.classList.remove('hidden');
+        response.classList.add('show');
+    });
+
+    // Add countdown element
+    const countdownElement = document.createElement('p');
+    countdownElement.id = 'finalCountdown';
+    response.appendChild(countdownElement);
+
+    // Countdown timer function
+    function startCountdown() {
+        const dateTime = new Date();
+        dateTime.setDate(dateTime.getDate() + 2); // Set to 2 days from now
+        dateTime.setHours(19, 0, 0); // Set to 7 PM
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = dateTime - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (distance < 0) {
+                clearInterval(x);
+                countdownElement.innerHTML = "It's date time! ❤️";
+            }
+        }
+
+        updateCountdown();
+        const x = setInterval(updateCountdown, 1000);
+    }
+
+    const questionsYesBtn = document.getElementById('questionsYesBtn');
+    const questionsNoBtn = document.getElementById('questionsNoBtn');
+    const tryAgainDiv = document.getElementById('tryAgain');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const proceedBtn = document.getElementById('proceedBtn');
+
+    // Questions array
     const questions = [
         {
-            question: "What do you want to eat?",
+            question: "What's Your Favorite Cuisine?",
             options: [
                 { text: "Sushi", image: "images/sushi.jpg" },
                 { text: "Pizza", image: "images/pizza.jpg" },
@@ -43,246 +106,100 @@ document.addEventListener('DOMContentLoaded', () => {
             question: "Where Would You Prefer to Go?",
             options: [
                 { text: "A cozy café", image: "images/cafe.jpg" },
-                { text: "A fancy restaurant", image: "images/fancyrestaurant.jpg" },
-                { text: "Stay at home", image: "images/stayhome.jpg" },
-                { text: "A picnic in the park", image: "images/park.jpg" }
+                { text: "A fancy restaurant", image: "images/restaurant.jpg" },
+                { text: "An adventurous food truck", image: "images/foodtruck.jpg" },
+                { text: "A picnic in the park", image: "images/picnic.jpg" }
             ]
         },
         {
             question: "What's Your Ideal Activity for Our Date?",
-            options: [
-                { text: "Watching a movie", image: "images/movie.jpg" },
-                { text: "Going for a walk", image: "images/walking.jpg" },
-                { text: "Visiting a museum", image: "images/museum.jpg" },
-                { text: "Attending a live concert", image: "images/liveconcert.jpg" }
-            ]
+            options: ["Watching a movie", "Going for a walk", "Visiting a museum", "Attending a live concert"]
         },
         {
-            question: "What do you want for Dessert?",
-            options: [
-                { text: "Ice cream", image: "images/icecream.jpg" },
-                { text: "Chocolate cake", image: "images/chocolatecake.jpg" },
-                { text: "Cheesecake", image: "images/cheesecake.jpg" },
-                { text: "Fruit salad", image: "images/fruitsalad.jpg" }
-            ]
+            question: "What's Your Favorite Dessert?",
+            options: ["Ice cream", "Chocolate cake", "Cheesecake", "Fruit salad"]
         },
         {
             question: "Which Time Works Best for You?",
-            options: [
-                { text: "Morning", image: "images/morning.jpg" },
-                { text: "Afternoon", image: "images/afternoon.jpg" },
-                { text: "Evening", image: "images/evening.jpg" },
-                { text: "Night", image: "images/night.jpg" }
-            ]
+            options: ["Morning", "Afternoon", "Evening", "Night"]
         },
         {
-            question: "What Type of Flowers Would You Like?",
-            options: [
-                { text: "Roses", image: "images/roses.jpg" },
-                { text: "Tulips", image: "images/tulips.jpg" },
-                { text: "Sunflowers", image: "images/sunflowers.jpg" },
-                { text: "Lilies", image: "images/lilies.jpg" }
-            ]
+            question: "What's Your Preferred Dress Code?",
+            options: ["Casual", "Semi-formal", "Formal", "Sporty"]
         }
     ];
 
-    // Cache DOM elements and create fragment
-    const questionsList = document.getElementById('questionsList');
-    const fragment = document.createDocumentFragment();
-    
-    // Optimize image loading
-    function loadImage(src) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = src;
-        });
-    }
+    // Handle questions yes button
+    questionsYesBtn.addEventListener('click', () => {
+        window.location.href = 'questions.html';
+    });
 
-    // Preload images
-    function preloadImages() {
-        const imagePromises = questions.flatMap(q => 
-            q.options.map(opt => loadImage(opt.image))
-        );
-        return Promise.all(imagePromises).catch(() => console.log('Some images failed to load'));
-    }
+    // Handle questions no button
+    questionsNoBtn.addEventListener('click', () => {
+        response.classList.add('hidden');
+        tryAgainDiv.classList.remove('hidden');
+        tryAgainDiv.classList.add('show');
+    });
 
-    // Create question card more efficiently
-    function createQuestionCard(q, index) {
-        const questionDiv = document.createElement('div');
-        questionDiv.className = 'question-card';
+    // Handle proceed button in try again section
+    proceedBtn.addEventListener('click', () => {
+        window.location.href = 'questions.html';
+    });
+
+    function showQuestions() {
+        questionsContainer.classList.remove('hidden');
+        questionsContainer.classList.add('show');
         
-        const optionsHTML = q.options.map((option, optIndex) => {
-            const isFancyRestaurant = option.text === "A fancy restaurant";
-            const isLiveConcert = option.text === "Attending a live concert";
-            const isMuseum = option.text === "Visiting a museum";
-            const isFlowerQuestion = q.question.includes("Flowers");
-            const isDisabled = isFancyRestaurant;
+        const questionsList = document.getElementById('questionsList');
+        questionsList.innerHTML = ''; // Clear existing questions
+        
+        questions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question-card');
             
-            const labelClickHandler = isFancyRestaurant ? 
-                'onclick="showWarningModal(\'restaurant\'); event.preventDefault(); return false;"' : 
-                isMuseum ?
-                'onclick="showWarningModal(\'museum\'); event.preventDefault(); return false;"' : '';
-            
-            return `
-                <div class="option-card ${isDisabled ? 'disabled' : ''} ${isLiveConcert ? 'concert-option' : ''}">
-                    <input type="radio" 
-                        id="q${index}o${optIndex}" 
-                        name="question${index}" 
-                        value="${option.text}"
-                        ${isDisabled ? 'disabled' : ''}
-                        ${isLiveConcert ? 'onchange="updateConcertText(this)"' : ''}
-                        ${isFlowerQuestion ? 'onchange="showFlowerSurprise(this)"' : ''}
-                        ${isMuseum ? 'disabled' : ''}
-                    >
-                    <label for="q${index}o${optIndex}" ${labelClickHandler}>
-                        <img src="${option.image}" 
-                             class="option-image" 
-                             alt="${option.text}"
-                             loading="lazy">
+            let optionsHTML = q.options.map((option, optIndex) => `
+                <div class="option-card">
+                    <input type="radio" id="q${index}o${optIndex}" name="question${index}" value="${option.text}">
+                    <label for="q${index}o${optIndex}">
+                        ${option.image ? `<img src="${option.image}" class="option-image" alt="${option.text}">` : ''}
                         <div class="option-content">
                             <span class="option-letter">${String.fromCharCode(97 + optIndex)}.</span>
-                            <span class="option-text">${option.text}</span>
-                            ${isLiveConcert ? '<span class="without-me-text">...without me lol</span>' : ''}
+                            ${option.text}
                         </div>
                     </label>
                 </div>
+            `).join('');
+
+            questionDiv.innerHTML = `
+                <h3>Question ${index + 1}</h3>
+                <p class="question-text">${q.question}</p>
+                <div class="options-grid">
+                    ${optionsHTML}
+                </div>
             `;
-        }).join('');
-
-        questionDiv.innerHTML = `
-            <h3>Question ${index + 1}</h3>
-            <p class="question-text">${q.question}</p>
-            <div class="options-grid">
-                ${optionsHTML}
-            </div>
-        `;
-        
-        return questionDiv;
-    }
-
-    // Optimized showQuestions function
-    async function showQuestions() {
-        // Clear existing content
-        questionsList.innerHTML = '';
-        
-        // Show loading indicator
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'loading';
-        loadingDiv.textContent = 'Loading questions...';
-        questionsList.appendChild(loadingDiv);
-
-        // Preload images
-        await preloadImages();
-
-        // Remove loading indicator
-        loadingDiv.remove();
-
-        // Create and append all questions
-        questions.forEach((q, index) => {
-            fragment.appendChild(createQuestionCard(q, index));
+            questionsList.appendChild(questionDiv);
         });
-
-        // Add note about email
-        const emailNote = document.createElement('p');
-        emailNote.className = 'email-note';
-        emailNote.innerHTML = 'When you click submit, please select Gmail or Outlook to email your answers ❤️ anders gaan ons nie op n date nie.';
-        fragment.appendChild(emailNote);
 
         // Add submit button
         const submitBtn = document.createElement('button');
         submitBtn.textContent = 'Submit Answers';
-        submitBtn.className = 'submit-btn';
+        submitBtn.classList.add('submit-btn');
         submitBtn.addEventListener('click', handleSubmit);
-        fragment.appendChild(submitBtn);
-
-        // Append everything at once
-        questionsList.appendChild(fragment);
+        questionsList.appendChild(submitBtn);
     }
 
-    // Optimized submit handler
     function handleSubmit() {
-        // Only check first 5 questions (excluding flowers)
-        const answers = questions.slice(0, 5).map((_, index) => {
+        const answers = [];
+        questions.forEach((_, index) => {
             const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
-            return {
-                question: questions[index].question,
-                answer: selectedOption ? selectedOption.value : 'No answer'
-            };
+            answers.push(selectedOption ? selectedOption.value : 'No answer');
         });
         
-        if (answers.some(a => a.answer === 'No answer')) {
+        if (answers.includes('No answer')) {
             alert('Please answer all questions! ❤️');
             return;
         }
-
-        // Format email content
-        const emailBody = answers.map(a => 
-            `${a.question}: ${a.answer}`
-        ).join('%0D%0A%0D%0A'); // Add line breaks for email
-
-        // Create email link
-        const emailSubject = "Date Answers 💕";
-        const mailtoLink = `mailto:duan.kemp2004777@gmail.com?subject=${emailSubject}&body=${emailBody}`;
-
-        // Open email client
-        window.location.href = mailtoLink;
         
-        // Show confirmation modal after small delay
-        setTimeout(() => {
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            
-            const confirmationModal = document.createElement('div');
-            confirmationModal.className = 'confirmation-modal';
-            confirmationModal.innerHTML = `
-                <div class="confirmation-content">
-                    <h2>Thank you for your answers! ❤️</h2>
-                    <p>I will plan the perfect date based on your choices!</p>
-                    <button onclick="this.parentElement.parentElement.remove(); document.querySelector('.modal-overlay').remove();">
-                        Can't Wait! 😊
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            document.body.appendChild(confirmationModal);
-        }, 500);
+        alert('Thank you for your answers! ❤️\nI will plan the perfect date based on your choices!');
     }
-
-    // Add this to the global scope
-    window.updateConcertText = function(radio) {
-        const concertOptions = document.querySelectorAll('.concert-option');
-        concertOptions.forEach(option => {
-            option.classList.toggle('selected', option.contains(radio) && radio.checked);
-        });
-    }
-
-    // Add this to the global scope
-    window.showFlowerSurprise = function(radio) {
-        const questionCard = radio.closest('.question-card');
-        const optionsGrid = questionCard.querySelector('.options-grid');
-        
-        // Create surprise message
-        const surpriseDiv = document.createElement('div');
-        surpriseDiv.className = 'flower-surprise';
-        surpriseDiv.innerHTML = `
-            <div class="surprise-content">
-                <h2>Sike! 😂</h2>
-                <p>Lol het jy actually gedink daar is opsies<br>Jy sal maar kry wat in the shop is</p>
-            </div>
-        `;
-        
-        // Replace options with surprise message
-        optionsGrid.style.animation = 'fadeOut 0.5s forwards';
-        setTimeout(() => {
-            optionsGrid.innerHTML = '';
-            optionsGrid.appendChild(surpriseDiv);
-            optionsGrid.style.animation = 'fadeIn 0.5s forwards';
-        }, 500);
-    };
-
-    // Start showing questions
-    showQuestions();
 }); 
