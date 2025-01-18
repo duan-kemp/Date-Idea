@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go On a Date With Me?</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div id="initial-message">
+            <h1>Hey Beautiful!...***smirk smirk***</h1>
+            <p>I have a special question for you...</p>
+            <button id="revealBtn">Reveal Question</button>
+        </div>
+
+        <div id="question-content" class="hidden">
+            <h1>Would you like to go on a date with me?❤️</h1>            
+            <div class="buttons">
+                <button id="yesBtn">Yes!</button>
+                <button id="noBtn">No</button>
+            </div>
+            
+            <div id="response" class="hidden">
+                <h1>Yayy almost it's time!</h1>
+                <h2>In the meantime, Can you answer a few questions for me?</h2>
+                <div class="buttons">
+                    <button id="questionsYesBtn">Yes!</button>
+                    <button id="questionsNoBtn">No</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- New container for "try again" message -->
+        <div id="tryAgain" class="hidden">
+            <h1>Let's try this again...</h1>
+            <h2>Answer the following questions !PERIOD!.</h2>
+            <button id="proceedBtn">Proceed</button>
+        </div>
+
+        <!-- New container for questions -->
+        <div id="questionsContainer" class="hidden">
+            <h1>Answer these questions for me ❤️</h1>
+            <div id="questionsList">
+                <!-- Questions will be added dynamically via JavaScript -->
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html> 
